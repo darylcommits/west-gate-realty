@@ -226,7 +226,7 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
                 <div className="absolute inset-0 bg-black/20 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                   <div className="text-white text-center">
                     <div className="text-2xl font-bold mb-2">Click for Details</div>
-                    <div className="text-sm opacity-90">{property.details.price}</div>
+            
                   </div>
                 </div>
               </div>
