@@ -126,7 +126,6 @@ const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({ property, isO
           {/* Content Section */}
           <div className="p-8">
            
-
             {/* Description */}
             <div className="mb-6">
               <h3 className="text-xl font-semibold text-gray-800 mb-3">Description</h3>
