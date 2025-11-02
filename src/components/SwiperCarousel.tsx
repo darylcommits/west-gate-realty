@@ -33,7 +33,6 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
       typeColor: "#62667f",
       backgroundImage: "/assets/images/agricultural.jpg",
       details: {
-        price: "Starting from ₱15,000/sqm",
         size: "2-50 hectares available",
         features: ["Fertile Soil", "Water Access", "Road Access"],
         description: "Prime farming properties with excellent soil quality and water access for agricultural development."
@@ -61,7 +60,6 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
       typeColor: "#b45205",
       backgroundImage: "/assets/images/narvacan.jpg",
       details: {
-        price: "Starting from ₱25,000/sqm",
         size: "500-2000 sqm lots",
         features: ["Beach Access", "Modern Design", "Security"],
         description: "Dream coastal properties with stunning ocean views and modern amenities."
@@ -75,7 +73,6 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
       typeColor: "#087ac4",
       backgroundImage: "/assets/images/sinait.jpg",
       details: {
-        price: "Starting from ₱30,000/sqm",
         size: "1000-5000 sqm",
         features: ["High Traffic", "Business District", "Heritage Location"],
         description: "Prime commercial properties in historic business districts with high foot traffic."
@@ -89,7 +86,6 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
       typeColor: "#1b7402",
       backgroundImage: "/assets/images/sanil.jpg",
       details: {
-        price: "Starting from ₱12,000/sqm",
         size: "1-20 hectares available",
         features: ["Rich Farmland", "Irrigation System", "Strategic Location", "Agricultural Support"],
         description: "Fertile agricultural lands in San Ildefonso with excellent farming potential and modern irrigation facilities."
