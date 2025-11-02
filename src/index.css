@@ -14,6 +14,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #ebe6e0;
 }
 
 code {
@@ -28,8 +29,8 @@ code {
 }
 
 @keyframes glow {
-  0% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
-  100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8), 0 0 30px rgba(59, 130, 246, 0.6); }
+  0% { box-shadow: 0 0 5px rgba(0, 40, 75, 0.5); }
+  100% { box-shadow: 0 0 20px rgba(0, 40, 75, 0.8), 0 0 30px rgba(0, 40, 75, 0.6); }
 }
 
 /* Animation delays */
@@ -53,7 +54,7 @@ section {
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #0ea5e9, #f59e0b);
+  background: linear-gradient(135deg, #00284b, #3377a7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

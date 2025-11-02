@@ -1,117 +1,30 @@
 import React, { useState } from 'react';
 import PropertySearch from './PropertySearch';
-import PropertyShowcase360 from './PropertyShowcase360';
 import LeadCapture from './LeadCapture';
 import MortgageCalculator from './MortgageCalculator';
 import AnimatedSection from './AnimatedSection';
 
 const PropertyListings: React.FC = () => {
   const [showLeadForm, setShowLeadForm] = useState(false);
+  const [selectedPropertyType, setSelectedPropertyType] = useState<string>('');
+
+  const handlePropertyTypeClick = (type: string) => {
+    setSelectedPropertyType(type);
+    // Scroll to properties section
+    const element = document.getElementById('properties');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    // In a real app, this would filter the properties by type
+    console.log(`Filtering properties by type: ${type}`);
+  };
 
   return (
     <AnimatedSection>
-      <section id="listings" className="py-16 bg-gradient-to-br from-gray-50 to-white">
+      <section id="listings" className="py-16 bg-gradient-to-br from-beige-100 to-beige-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Section Header */}
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-primary-900 mb-6">
-              Premium Property Portfolio
-            </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-gold-500 mx-auto mb-6"></div>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              Discover exceptional real estate opportunities in Ilocos with our advanced search tools, 
-              high-quality visuals, and comprehensive property information.
-            </p>
-          </div>
+         
 
-          {/* Advanced Search Component */}
-          <div className="mb-12">
-            <PropertySearch />
-          </div>
-
-          {/* Featured Properties Showcase */}
-          <div className="mb-12">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-2xl font-bold text-primary-900">Featured Properties</h3>
-              <button
-                onClick={() => setShowLeadForm(true)}
-                className="bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors font-medium"
-              >
-                Get Property Alerts
-              </button>
-            </div>
-            <PropertyShowcase360 />
-          </div>
-
-          {/* Property Statistics */}
-          <div className="bg-white rounded-2xl shadow-xl p-8 mb-12">
-            <h3 className="text-2xl font-bold text-primary-900 mb-6 text-center">Market Overview</h3>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="text-center">
-                <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <svg className="w-8 h-8 text-primary-600" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-                  </svg>
-                </div>
-                <div className="text-3xl font-bold text-primary-900 mb-1">150+</div>
-                <div className="text-gray-600">Active Listings</div>
-              </div>
-              <div className="text-center">
-                <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <svg className="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
-                </div>
-                <div className="text-3xl font-bold text-primary-900 mb-1">98%</div>
-                <div className="text-gray-600">Client Satisfaction</div>
-              </div>
-              <div className="text-center">
-                <div className="bg-gold-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <svg className="w-8 h-8 text-gold-600" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                  </svg>
-                </div>
-                <div className="text-3xl font-bold text-primary-900 mb-1">25+</div>
-                <div className="text-gray-600">Years Experience</div>
-              </div>
-              <div className="text-center">
-                <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <svg className="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                    <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                  </svg>
-                </div>
-                <div className="text-3xl font-bold text-primary-900 mb-1">12</div>
-                <div className="text-gray-600">Cities Covered</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Property Types Grid */}
-          <div className="mb-12">
-            <h3 className="text-2xl font-bold text-primary-900 mb-8 text-center">Browse by Property Type</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                { type: 'Residential', count: '45', icon: '🏠', color: 'from-blue-500 to-blue-600' },
-                { type: 'Agricultural', count: '28', icon: '🌾', color: 'from-green-500 to-green-600' },
-                { type: 'Commercial', count: '33', icon: '🏢', color: 'from-purple-500 to-purple-600' },
-                { type: 'Solar Projects', count: '12', icon: '☀️', color: 'from-yellow-500 to-orange-600' }
-              ].map((category, index) => (
-                <div key={index} className="group cursor-pointer">
-                  <div className={`bg-gradient-to-br ${category.color} rounded-xl p-6 text-white transform group-hover:scale-105 transition-all duration-300 shadow-lg group-hover:shadow-xl`}>
-                    <div className="text-4xl mb-3">{category.icon}</div>
-                    <h4 className="text-lg font-semibold mb-2">{category.type}</h4>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm opacity-90">{category.count} Properties</span>
-                      <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
 
           {/* Neighborhood Highlights */}
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-12">
@@ -119,22 +32,25 @@ const PropertyListings: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 {
-                  name: 'Vigan Heritage District',
+                  name: 'Sinait Heritage District',
                   description: 'Historic charm meets modern living',
                   highlights: ['UNESCO World Heritage Site', 'Tourist attractions', 'Cultural significance', 'Investment potential'],
-                  image: '/api/placeholder/400/300?text=Vigan+Heritage'
+                  image: '/assets/images/sinait.jpg',
+                  location: 'Sinait, Ilocos Sur'
                 },
                 {
-                  name: 'Laoag Business Center',
-                  description: 'Prime commercial and residential hub',
-                  highlights: ['Business district', 'Modern amenities', 'Transportation links', 'Growth potential'],
-                  image: '/api/placeholder/400/300?text=Laoag+Business'
-                },
-                {
-                  name: 'Candon Coastal Area',
+                  name: 'Narvacan Coastal Area',
                   description: 'Beachfront living and eco-tourism',
                   highlights: ['Beach access', 'Natural beauty', 'Eco-friendly developments', 'Resort potential'],
-                  image: '/api/placeholder/400/300?text=Candon+Coastal'
+                  image: '/assets/images/narvacan.jpg',
+                  location: 'Narvacan, Ilocos Sur'
+                },
+                {
+                  name: 'San Ildefonso Agricultural Lands',
+                  description: 'Prime farming and agricultural hub',
+                  highlights: ['Fertile farmlands', 'Irrigation system', 'Agricultural developments', 'Investment opportunities'],
+                  image: '/assets/images/sanil.jpg',
+                  location: 'San Ildefonso, Ilocos Sur'
                 }
               ].map((neighborhood, index) => (
                 <div key={index} className="group cursor-pointer">
@@ -142,24 +58,38 @@ const PropertyListings: React.FC = () => {
                     <img 
                       src={neighborhood.image} 
                       alt={neighborhood.name}
-                      className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="w-full h-40 sm:h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                       onError={(e) => {
                         e.currentTarget.src = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="%23f3f4f6"/><text x="200" y="150" text-anchor="middle" fill="%236b7280" font-size="16">${neighborhood.name}</text></svg>`;
                       }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="absolute bottom-4 left-4 right-4">
-                        <button className="w-full bg-white text-primary-900 py-2 px-4 rounded-lg font-medium hover:bg-gray-100 transition-colors">
-                          Explore Area
+                      <div className="absolute bottom-2 left-2 right-2 sm:bottom-4 sm:left-4 sm:right-4">
+                        <button 
+                          onClick={() => {
+                            // Scroll to properties section and filter by location
+                            const element = document.getElementById('properties');
+                            if (element) {
+                              element.scrollIntoView({ behavior: 'smooth' });
+                            }
+                          }}
+                          className="w-full bg-white text-primary-900 py-1.5 sm:py-2 px-3 sm:px-4 rounded-lg font-medium hover:bg-gray-100 transition-colors text-sm sm:text-base"
+                        >
+                          Explore Properties
                         </button>
                       </div>
                     </div>
+                    <div className="absolute top-2 left-2 sm:top-4 sm:left-4">
+                      <span className="bg-primary-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                        {neighborhood.location}
+                      </span>
+                    </div>
                   </div>
-                  <h4 className="text-lg font-semibold text-primary-900 mb-2">{neighborhood.name}</h4>
-                  <p className="text-gray-600 mb-3">{neighborhood.description}</p>
+                  <h4 className="text-base sm:text-lg font-semibold text-primary-900 mb-2">{neighborhood.name}</h4>
+                  <p className="text-gray-600 mb-3 text-sm sm:text-base">{neighborhood.description}</p>
                   <div className="space-y-1">
                     {neighborhood.highlights.map((highlight, idx) => (
-                      <div key={idx} className="flex items-center text-sm text-gray-600">
+                      <div key={idx} className="flex items-center text-xs sm:text-sm text-gray-600">
                         <span className="text-green-500 mr-2">✓</span>
                         {highlight}
                       </div>

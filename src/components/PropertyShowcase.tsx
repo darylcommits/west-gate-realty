@@ -1,37 +1,68 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AnimatedSection from './AnimatedSection';
 
 const PropertyShowcase: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLearnMore = (propertyType: string) => {
+    setIsLoading(true);
+    
+    // Simulate loading and then scroll to listings section
+    setTimeout(() => {
+      setIsLoading(false);
+      const element = document.getElementById('listings');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+      // In a real app, this would filter properties by type
+      console.log(`Navigating to ${propertyType} properties`);
+    }, 1000);
+  };
+
+  const handleScheduleViewing = () => {
+    const element = document.getElementById('contact');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleDownloadBrochure = () => {
+    // In a real app, this would trigger a download
+    alert('Brochure download feature would be implemented here');
+  };
   const properties = [
     {
-      title: "Agricultural Lands",
-      description: "Fertile farming properties with excellent irrigation systems and strategic locations for sustainable agriculture in Ilocos.",
-      image: "/assets/images/agricultural-placeholder.jpg",
+      title: "San Ildefonso Agricultural Lands",
+      description: "Fertile farming properties in San Ildefonso with excellent irrigation systems and strategic locations for sustainable agriculture.",
+      image: "/assets/images/sanil.jpg",
       bgGradient: "from-green-400 via-green-500 to-green-600",
-      features: ["Prime farming locations", "Water access", "Rich soil quality", "Government support"],
-      stats: { size: "1-10 hectares", location: "Ilocos Region" }
+      features: ["Prime farming location", "Irrigation system", "Rich soil quality", "Agricultural support"],
+      stats: { size: "1-20 hectares", location: "San Ildefonso" },
+      type: "Agricultural"
     },
     {
       title: "Solar Farm Developments",
       description: "Cutting-edge renewable energy projects with state-of-the-art solar panel installations for sustainable power generation.",
-      image: "/assets/images/solar-placeholder.jpg",
+      image: "/assets/images/ssolar.jpg",
       bgGradient: "from-yellow-400 via-orange-500 to-red-500",
       features: ["High energy yield", "Government incentives", "Long-term ROI", "Environmental impact"],
-      stats: { capacity: "50-500 MW", status: "Available" }
+      stats: { capacity: "50-500 MW", status: "Available" },
+      type: "Solar Projects"
     },
     {
-      title: "Commercial Properties",
-      description: "Strategic commercial real estate opportunities in high-traffic areas perfect for business expansion and investment.",
-      image: "/assets/images/commercial-placeholder.jpg",
+      title: "Sinait Heritage Properties",
+      description: "Strategic heritage real estate opportunities in high-traffic areas perfect for business expansion and investment.",
+      image: "/assets/images/sinait.jpg",
       bgGradient: "from-blue-400 via-blue-500 to-blue-600",
-      features: ["Prime locations", "High foot traffic", "Modern facilities", "Investment potential"],
-      stats: { area: "100-1000 sqm", type: "Commercial" }
+      features: ["Prime locations", "High foot traffic", "Heritage value", "Investment potential"],
+      stats: { area: "100-1000 sqm", type: "Commercial" },
+      type: "Commercial"
     }
   ];
 
   return (
     <AnimatedSection>
-      <section id="properties" className="py-16 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
+      <section id="properties" className="py-16 bg-gradient-to-br from-beige-100 to-beige-50 relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute top-0 left-0 w-full h-full">
           <div className="absolute top-20 right-10 w-72 h-72 bg-gradient-to-br from-primary-200 to-green-200 rounded-full blur-3xl opacity-20 animate-pulse"></div>
@@ -49,7 +80,7 @@ const PropertyShowcase: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {properties.map((property, index) => (
               <div 
                 key={index}
@@ -57,7 +88,7 @@ const PropertyShowcase: React.FC = () => {
                 style={{ animationDelay: `${index * 200}ms` }}
               >
                 {/* Property Image Section */}
-                <div className={`relative h-64 bg-gradient-to-br ${property.bgGradient} overflow-hidden`}>
+                <div className={`relative h-48 sm:h-56 lg:h-64 bg-gradient-to-br ${property.bgGradient} overflow-hidden`}>
                   <img 
                     src={property.image} 
                     alt={property.title}
@@ -92,20 +123,20 @@ const PropertyShowcase: React.FC = () => {
                 </div>
 
                 {/* Content Section */}
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold text-primary-900 mb-3 group-hover:text-primary-700 transition-colors">
+                <div className="p-4 sm:p-6">
+                  <h3 className="text-xl sm:text-2xl font-bold text-primary-900 mb-3 group-hover:text-primary-700 transition-colors">
                     {property.title}
                   </h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed">
+                  <p className="text-gray-600 mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
                     {property.description}
                   </p>
 
                   {/* Features */}
-                  <div className="mb-6">
-                    <h4 className="font-semibold text-gray-900 mb-3">Key Features:</h4>
-                    <div className="grid grid-cols-2 gap-2">
+                  <div className="mb-4 sm:mb-6">
+                    <h4 className="font-semibold text-gray-900 mb-2 sm:mb-3 text-sm sm:text-base">Key Features:</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2">
                       {property.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-center text-sm text-gray-600">
+                        <div key={idx} className="flex items-center text-xs sm:text-sm text-gray-600">
                           <span className="text-green-500 mr-2">✓</span>
                           {feature}
                         </div>
@@ -114,8 +145,24 @@ const PropertyShowcase: React.FC = () => {
                   </div>
 
                   {/* CTA Button */}
-                  <button className={`w-full bg-gradient-to-r ${property.bgGradient} text-white py-3 rounded-lg font-semibold transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl`}>
-                    Learn More
+                  <button 
+                    onClick={() => handleLearnMore(property.type)}
+                    disabled={isLoading}
+                    className={`w-full bg-gradient-to-r ${property.bgGradient} text-white py-3 rounded-lg font-semibold transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl ${
+                      isLoading ? 'opacity-75 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    {isLoading ? (
+                      <span className="flex items-center justify-center">
+                        <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Loading...
+                      </span>
+                    ) : (
+                      'Learn More'
+                    )}
                   </button>
                 </div>
 
@@ -133,10 +180,16 @@ const PropertyShowcase: React.FC = () => {
                 Contact our expert team to learn more about these exceptional properties and find the perfect investment for your needs.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <button className="bg-white text-primary-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">
+                <button 
+                  onClick={handleScheduleViewing}
+                  className="bg-white text-primary-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105"
+                >
                   Schedule a Viewing
                 </button>
-                <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition-all duration-300 transform hover:scale-105">
+                <button 
+                  onClick={handleDownloadBrochure}
+                  className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition-all duration-300 transform hover:scale-105"
+                >
                   Download Brochure
                 </button>
               </div>

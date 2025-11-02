@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import AboutSection from './components/AboutSection';
@@ -10,9 +11,10 @@ import WhyChooseUsSection from './components/WhyChooseUsSection';
 import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
 import ChatBot from './components/ChatBot';
+import ProtectedRoute from './components/admin/ProtectedRoute';
 import './App.css';
 
-const App: React.FC = () => {
+const HomePage: React.FC = () => {
   return (
     <div className="App">
       <Header />
@@ -27,6 +29,17 @@ const App: React.FC = () => {
       <Footer />
       <ChatBot />
     </div>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/admin/*" element={<ProtectedRoute />} />
+      </Routes>
+    </Router>
   );
 };
 

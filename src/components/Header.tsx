@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,10 +21,10 @@ const Header: React.FC = () => {
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
               <div className="flex items-center space-x-3 cursor-pointer" onClick={() => scrollToSection('home')}>
-                <img 
-                  src="/assets/images/logo-placeholder.svg" 
-                  alt="West Gate Realty Services" 
-                  className="h-12 w-auto transition-transform hover:scale-105" 
+                <img
+                  src="/assets/images/logo.jpg"
+                  alt="West Gate Realty Services"
+                  className="h-13 w-12 rounded-full object-cover shadow-lg transition-transform hover:scale-110 border-2 border-primary-500"
                   onError={(e) => {
                     // Fallback to text logo if image fails to load
                     e.currentTarget.style.display = 'none';
@@ -69,6 +70,7 @@ const Header: React.FC = () => {
               Contact
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
             </button>
+           
           </nav>
 
           {/* Mobile menu button */}
@@ -93,6 +95,7 @@ const Header: React.FC = () => {
               <button onClick={() => scrollToSection('services')} className="text-left text-gray-700 hover:text-primary-600 transition-colors">Services</button>
               <button onClick={() => scrollToSection('certifications')} className="text-left text-gray-700 hover:text-primary-600 transition-colors">Certifications</button>
               <button onClick={() => scrollToSection('contact')} className="text-left text-gray-700 hover:text-primary-600 transition-colors">Contact</button>
+             
             </nav>
           </div>
         )}

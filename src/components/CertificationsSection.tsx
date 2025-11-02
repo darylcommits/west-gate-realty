@@ -1,10 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AnimatedSection from './AnimatedSection';
 
 const CertificationsSection: React.FC = () => {
+  const [showCertificateModal, setShowCertificateModal] = useState(false);
+  const [selectedCertificate, setSelectedCertificate] = useState<string>('');
+
+  const certificates = [
+    {
+      id: 'dti',
+      title: 'DTI Business Registration Certificate',
+      type: 'DTI Certificate',
+      number: '7087904',
+      validFrom: '15 April 2025',
+      validTo: '15 April 2030',
+      certificateId: 'WXYZ93511759066',
+      image: "/assets/images/dti.jpg",
+      description: 'Official business registration certificate from the Department of Trade and Industry'
+    },
+    {
+      id: 'prc',
+      title: 'PRC Professional License',
+      type: 'PRC Accreditation',
+      number: '22818',
+      validFrom: '2023',
+      validTo: '2025',
+      certificateId: 'PRC-22818-2023',
+      image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+      description: 'Professional Regulation Commission accreditation for real estate services'
+    }
+  ];
+
+  const openCertificateModal = (certId: string) => {
+    setSelectedCertificate(certId);
+    setShowCertificateModal(true);
+  };
+
+  const closeCertificateModal = () => {
+    setShowCertificateModal(false);
+    setSelectedCertificate('');
+  };
+
   return (
     <AnimatedSection>
-      <section id="certifications" className="py-16 bg-white">
+      <section id="certifications" className="py-16 bg-beige-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-primary-900 mb-4">LEGITIMACY CERTIFICATIONS</h2>
@@ -31,7 +69,13 @@ const CertificationsSection: React.FC = () => {
                     <div className="text-center">
                       <div className="text-3xl mb-2">🏛️</div>
                       <p className="text-sm font-semibold text-green-600">DTI CERTIFIED</p>
-                      <p className="text-xs text-gray-500">Business Registration</p>
+                      <p className="text-xs text-gray-500 mb-4">Business Registration</p>
+                      <button
+                        onClick={() => openCertificateModal('dti')}
+                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                      >
+                        View Certificate
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -56,7 +100,13 @@ const CertificationsSection: React.FC = () => {
                     <div className="bg-white p-4 rounded-lg shadow-md">
                       <div className="text-3xl mb-2">🎓</div>
                       <p className="text-sm font-semibold text-blue-600">PRC ACCREDITED</p>
-                      <p className="text-xs text-gray-500">Professional License</p>
+                      <p className="text-xs text-gray-500 mb-4">Professional License</p>
+                      <button
+                        onClick={() => openCertificateModal('prc')}
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                      >
+                        View License
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -92,6 +142,96 @@ const CertificationsSection: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Certificate Modal */}
+      {showCertificateModal && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-2 sm:p-4 animate-fade-in">
+          <div className="bg-white rounded-xl sm:rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-4 sm:p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg sm:text-2xl font-bold text-primary-900">
+                  {certificates.find(cert => cert.id === selectedCertificate)?.title}
+                </h3>
+                <button
+                  onClick={closeCertificateModal}
+                  className="text-gray-400 hover:text-gray-600 p-1 sm:p-2"
+                >
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {selectedCertificate && (
+                <div className="space-y-6">
+                  {/* Certificate Image */}
+                  <div className="text-center">
+                    <img
+                      src={certificates.find(cert => cert.id === selectedCertificate)?.image}
+                      alt={certificates.find(cert => cert.id === selectedCertificate)?.title}
+                      className="w-full max-w-2xl mx-auto rounded-lg shadow-lg"
+                      onError={(e) => {
+                        e.currentTarget.src = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><rect width="800" height="600" fill="%23f3f4f6"/><text x="400" y="300" text-anchor="middle" fill="%236b7280" font-size="24">Certificate Image</text></svg>`;
+                      }}
+                    />
+                  </div>
+
+                  {/* Certificate Details */}
+                  <div className="bg-gray-50 rounded-lg p-4 sm:p-6">
+                    <h4 className="text-lg font-semibold text-primary-900 mb-4">Certificate Details</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <span className="text-sm font-medium text-gray-600">Certificate Type:</span>
+                        <p className="text-primary-900 font-semibold">
+                          {certificates.find(cert => cert.id === selectedCertificate)?.type}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium text-gray-600">Certificate Number:</span>
+                        <p className="text-primary-900 font-semibold">
+                          {certificates.find(cert => cert.id === selectedCertificate)?.number}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium text-gray-600">Valid From:</span>
+                        <p className="text-primary-900 font-semibold">
+                          {certificates.find(cert => cert.id === selectedCertificate)?.validFrom}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium text-gray-600">Valid To:</span>
+                        <p className="text-primary-900 font-semibold">
+                          {certificates.find(cert => cert.id === selectedCertificate)?.validTo}
+                        </p>
+                      </div>
+                      <div className="sm:col-span-2">
+                        <span className="text-sm font-medium text-gray-600">Certificate ID:</span>
+                        <p className="text-primary-900 font-semibold">
+                          {certificates.find(cert => cert.id === selectedCertificate)?.certificateId}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div className="bg-blue-50 rounded-lg p-4 sm:p-6">
+                    <h4 className="text-lg font-semibold text-primary-900 mb-2">About This Certificate</h4>
+                    <p className="text-gray-700">
+                      {certificates.find(cert => cert.id === selectedCertificate)?.description}
+                    </p>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                    
+                   
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </AnimatedSection>
   );
 };

@@ -58,7 +58,7 @@ const ServicesSection: React.FC = () => {
 
   return (
     <AnimatedSection>
-      <section id="services" className="py-16 bg-gray-50">
+      <section id="services" className="py-16 bg-beige-100">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-primary-900 mb-4">OUR SERVICES</h2>

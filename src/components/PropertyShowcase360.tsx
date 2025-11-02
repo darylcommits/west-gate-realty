@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface Property {
   id: string;
@@ -27,6 +27,15 @@ const PropertyShowcase360: React.FC = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [viewMode, setViewMode] = useState<'gallery' | 'virtual' | 'drone' | 'floor'>('gallery');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showContactForm, setShowContactForm] = useState(false);
+  const [contactFormData, setContactFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
+    propertyId: ''
+  });
 
   // Sample property data - in real implementation, this would come from your API/CRM
   const properties: Property[] = [
@@ -51,13 +60,13 @@ const PropertyShowcase360: React.FC = () => {
         'Landscaped Garden'
       ],
       images: [
-        { url: '/api/placeholder/800/600?text=Villa+Exterior', alt: 'Villa exterior view', type: 'main' },
-        { url: '/api/placeholder/800/600?text=Living+Room', alt: 'Spacious living room', type: 'gallery' },
-        { url: '/api/placeholder/800/600?text=Master+Bedroom', alt: 'Master bedroom suite', type: 'gallery' },
-        { url: '/api/placeholder/800/600?text=Kitchen', alt: 'Modern kitchen', type: 'gallery' },
-        { url: '/api/placeholder/800/600?text=Pool+Area', alt: 'Pool and outdoor area', type: 'gallery' },
-        { url: '/api/placeholder/800/600?text=Aerial+View', alt: 'Drone aerial view', type: 'drone' },
-        { url: '/api/placeholder/800/600?text=Floor+Plan', alt: 'Property floor plan', type: 'floor_plan' }
+        { url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', alt: 'Modern luxury villa exterior', type: 'main' },
+        { url: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2058&q=80', alt: 'Spacious modern living room', type: 'gallery' },
+        { url: 'https://images.unsplash.com/photo-1631889993959-41b8bec24c09?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', alt: 'Luxury master bedroom', type: 'gallery' },
+        { url: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', alt: 'Modern kitchen with island', type: 'gallery' },
+        { url: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2080&q=80', alt: 'Infinity pool and outdoor area', type: 'gallery' },
+        { url: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', alt: 'Aerial view of luxury villa', type: 'drone' },
+        { url: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', alt: 'Modern villa floor plan', type: 'floor_plan' }
       ],
       virtualTour: 'https://example.com/virtual-tour-001',
       droneFootage: 'https://example.com/drone-video-001',
@@ -82,13 +91,13 @@ const PropertyShowcase360: React.FC = () => {
         'Government Support'
       ],
       images: [
-        { url: '/api/placeholder/800/600?text=Rice+Fields', alt: 'Lush rice fields', type: 'main' },
-        { url: '/api/placeholder/800/600?text=Irrigation+Canal', alt: 'Irrigation system', type: 'gallery' },
-        { url: '/api/placeholder/800/600?text=Farm+Equipment', alt: 'Farm storage area', type: 'gallery' },
-        { url: '/api/placeholder/800/600?text=Access+Road', alt: 'Property access road', type: 'gallery' },
-        { url: '/api/placeholder/800/600?text=Aerial+Farmland', alt: 'Aerial view of farmland', type: 'drone' }
+        { url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2059&q=80', alt: 'Lush rice fields in Ilocos', type: 'main' },
+        { url: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', alt: 'Agricultural irrigation system', type: 'gallery' },
+        { url: 'https://images.unsplash.com/photo-1582510003544-4ac00fbb413b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', alt: 'Farm equipment and storage', type: 'gallery' },
+        { url: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', alt: 'Rural access road', type: 'gallery' },
+        { url: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', alt: 'Aerial view of farmland', type: 'drone' }
       ],
-      droneFootage: 'https://example.com/drone-farm-001'
+      droneFootage: 'https://scontent.fmnl17-6.fna.fbcdn.net/v/t39.30808-6/489753241_122096762528840206_8257846173278025918_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGaRi2TnaYe2JU-ncYXpmIOGQUnzbIfWL4ZBSfNsh9YvrMFgTsq7d7gwT21TTPzb9RUvsvWkkUC3iu9ftCO-aWF&_nc_ohc=AzViIwtWjU8Q7kNvwGjLYmZ&_nc_oc=AdlzcByRsUQ0BA1cvQjddufSUmctjFuS5ni8zfs-FezE47qhEr3cIxZSf7vJUM3B52s&_nc_zt=23&_nc_ht=scontent.fmnl17-6.fna&_nc_gid=mBcuI-esurBcTcLzhq3tpQ&oh=00_AfZ_Scz5FYcuMGzaEh3voQ3fAr5Fql1U4TKM06YPsZyU8Q&oe=68CA1CDE'
     },
     {
       id: 'prop-003',
@@ -109,11 +118,11 @@ const PropertyShowcase360: React.FC = () => {
         'Environmental Compliance'
       ],
       images: [
-        { url: '/api/placeholder/800/600?text=Solar+Panels', alt: 'Solar panel arrays', type: 'main' },
-        { url: '/api/placeholder/800/600?text=Control+Room', alt: 'Monitoring control room', type: 'gallery' },
-        { url: '/api/placeholder/800/600?text=Grid+Connection', alt: 'Grid connection facility', type: 'gallery' },
-        { url: '/api/placeholder/800/600?text=Maintenance', alt: 'Maintenance area', type: 'gallery' },
-        { url: '/api/placeholder/800/600?text=Aerial+Solar', alt: 'Aerial view of solar farm', type: 'drone' }
+        { url: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', alt: 'Solar panel arrays', type: 'main' },
+        { url: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', alt: 'Solar farm control room', type: 'gallery' },
+        { url: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', alt: 'Grid connection facility', type: 'gallery' },
+        { url: 'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', alt: 'Solar farm maintenance area', type: 'gallery' },
+        { url: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', alt: 'Aerial view of solar farm', type: 'drone' }
       ],
       droneFootage: 'https://example.com/drone-solar-001'
     }
@@ -150,6 +159,64 @@ const PropertyShowcase360: React.FC = () => {
   const closeModal = () => {
     setSelectedProperty(null);
     setCurrentImageIndex(0);
+    setShowContactForm(false);
+  };
+
+  const handleVirtualTour = (property: Property) => {
+    setIsLoading(true);
+    // Simulate loading for virtual tour
+    setTimeout(() => {
+      setIsLoading(false);
+      // In a real app, this would open the virtual tour
+      window.open(property.virtualTour, '_blank');
+    }, 1500);
+  };
+
+  const handleDroneFootage = (property: Property) => {
+    setIsLoading(true);
+    // Simulate loading for drone footage
+    setTimeout(() => {
+      setIsLoading(false);
+      // In a real app, this would open the drone footage
+      window.open(property.droneFootage, '_blank');
+    }, 1500);
+  };
+
+  const handleContactForm = (property: Property) => {
+    setContactFormData({
+      name: '',
+      email: '',
+      phone: '',
+      message: `I'm interested in ${property.title} located in ${property.location}. Please provide more information.`,
+      propertyId: property.id
+    });
+    setShowContactForm(true);
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    // Simulate form submission
+    setTimeout(() => {
+      setIsLoading(false);
+      alert('Thank you for your interest! We will contact you within 24 hours.');
+      setShowContactForm(false);
+      setContactFormData({
+        name: '',
+        email: '',
+        phone: '',
+        message: '',
+        propertyId: ''
+      });
+    }, 2000);
+  };
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setContactFormData({
+      ...contactFormData,
+      [e.target.name]: e.target.value
+    });
   };
 
   const getCurrentImages = () => {
@@ -164,11 +231,11 @@ const PropertyShowcase360: React.FC = () => {
   return (
     <div>
       {/* Property Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
         {properties.map((property) => (
           <div key={property.id} className="bg-white rounded-2xl shadow-xl overflow-hidden group hover:shadow-2xl transition-all duration-500 transform hover:scale-105">
             {/* Property Image */}
-            <div className="relative h-64 overflow-hidden">
+            <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden">
               <img
                 src={property.images[0]?.url}
                 alt={property.images[0]?.alt}
@@ -186,17 +253,27 @@ const PropertyShowcase360: React.FC = () => {
               </div>
 
               {/* View Options */}
-              <div className="absolute top-4 right-4 flex space-x-2">
+              <div className="absolute top-2 right-2 sm:top-4 sm:right-4 flex flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-2">
                 {property.virtualTour && (
-                  <button className="bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <button 
+                    onClick={() => handleVirtualTour(property)}
+                    disabled={isLoading}
+                    className="bg-black/50 text-white p-1.5 sm:p-2 rounded-full hover:bg-black/70 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    title="Virtual Tour"
+                  >
+                    <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
                   </button>
                 )}
                 {property.droneFootage && (
-                  <button className="bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <button 
+                    onClick={() => handleDroneFootage(property)}
+                    disabled={isLoading}
+                    className="bg-black/50 text-white p-1.5 sm:p-2 rounded-full hover:bg-black/70 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    title="Drone Footage"
+                  >
+                    <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2h3a1 1 0 110 2h-1v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6H4a1 1 0 110-2h3z" />
                     </svg>
                   </button>
@@ -205,10 +282,10 @@ const PropertyShowcase360: React.FC = () => {
 
               {/* Overlay on hover */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="absolute bottom-4 left-4 right-4">
+                <div className="absolute bottom-2 left-2 right-2 sm:bottom-4 sm:left-4 sm:right-4">
                   <button
                     onClick={() => openPropertyDetails(property)}
-                    className="w-full bg-white text-primary-900 py-2 px-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                    className="w-full bg-white text-primary-900 py-1.5 sm:py-2 px-3 sm:px-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm sm:text-base"
                   >
                     View Details & Virtual Tour
                   </button>
@@ -217,48 +294,56 @@ const PropertyShowcase360: React.FC = () => {
             </div>
 
             {/* Property Info */}
-            <div className="p-6">
-              <h3 className="text-xl font-bold text-primary-900 mb-2">{property.title}</h3>
-              <p className="text-gray-600 flex items-center mb-3">
-                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
+            <div className="p-4 sm:p-6">
+              <h3 className="text-lg sm:text-xl font-bold text-primary-900 mb-2">{property.title}</h3>
+              <p className="text-gray-600 flex items-center mb-3 text-sm sm:text-base">
+                <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                 </svg>
-                {property.location}
+                <span className="truncate">{property.location}</span>
               </p>
 
               {/* Property Stats */}
-              <div className="flex flex-wrap gap-4 mb-4">
+              <div className="flex flex-wrap gap-2 sm:gap-4 mb-3 sm:mb-4">
                 {property.bedrooms && (
-                  <div className="flex items-center text-sm text-gray-600">
+                  <div className="flex items-center text-xs sm:text-sm text-gray-600">
                     <span className="font-medium">{property.bedrooms}</span>
                     <span className="ml-1">BR</span>
                   </div>
                 )}
                 {property.bathrooms && (
-                  <div className="flex items-center text-sm text-gray-600">
+                  <div className="flex items-center text-xs sm:text-sm text-gray-600">
                     <span className="font-medium">{property.bathrooms}</span>
                     <span className="ml-1">BA</span>
                   </div>
                 )}
-                <div className="flex items-center text-sm text-gray-600">
+                <div className="flex items-center text-xs sm:text-sm text-gray-600">
                   <span className="font-medium">{property.area}</span>
                 </div>
               </div>
 
-              <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+              <p className="text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">
                 {property.description}
               </p>
 
-              <div className="flex items-center justify-between">
-                <span className="text-lg font-bold text-primary-900">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
+                <span className="text-base sm:text-lg font-bold text-primary-900">
                   {property.price}
                 </span>
-                <button
-                  onClick={() => openPropertyDetails(property)}
-                  className="text-primary-600 hover:text-primary-700 font-medium transition-colors"
-                >
-                  Learn More →
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => openPropertyDetails(property)}
+                    className="text-primary-600 hover:text-primary-700 font-medium transition-colors text-sm sm:text-base"
+                  >
+                    Learn More →
+                  </button>
+                  <button
+                    onClick={() => handleContactForm(property)}
+                    className="bg-primary-600 text-white px-3 py-1 rounded-lg text-xs sm:text-sm font-medium hover:bg-primary-700 transition-colors"
+                  >
+                    Contact
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -267,19 +352,19 @@ const PropertyShowcase360: React.FC = () => {
 
       {/* Property Detail Modal */}
       {selectedProperty && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-2 sm:p-4 animate-fade-in">
+          <div className="bg-white rounded-xl sm:rounded-2xl max-w-6xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-primary-900">{selectedProperty.title}</h2>
-                <p className="text-gray-600">{selectedProperty.location}</p>
+            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 sm:p-6 flex items-center justify-between">
+              <div className="flex-1 min-w-0">
+                <h2 className="text-lg sm:text-2xl font-bold text-primary-900 truncate">{selectedProperty.title}</h2>
+                <p className="text-sm sm:text-base text-gray-600 truncate">{selectedProperty.location}</p>
               </div>
               <button
                 onClick={closeModal}
-                className="text-gray-400 hover:text-gray-600 p-2"
+                className="text-gray-400 hover:text-gray-600 p-1 sm:p-2 flex-shrink-0"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -449,12 +534,144 @@ const PropertyShowcase360: React.FC = () => {
                   </div>
 
                   {/* CTA Button */}
-                  <button className="w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white py-4 px-6 rounded-xl font-semibold hover:from-primary-700 hover:to-primary-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                  <button 
+                    onClick={() => handleContactForm(selectedProperty)}
+                    className="w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-xl font-semibold hover:from-primary-700 hover:to-primary-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
+                  >
                     Request More Information
                   </button>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Contact Form Modal */}
+      {showContactForm && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-2 sm:p-4 animate-fade-in">
+          <div className="bg-white rounded-xl sm:rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-4 sm:p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg sm:text-2xl font-bold text-primary-900">Contact Us</h3>
+                <button
+                  onClick={() => setShowContactForm(false)}
+                  className="text-gray-400 hover:text-gray-600 p-1 sm:p-2"
+                >
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <form onSubmit={handleFormSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                      Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={contactFormData.name}
+                      onChange={handleFormChange}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base"
+                      placeholder="Your full name"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={contactFormData.email}
+                      onChange={handleFormChange}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base"
+                      placeholder="your@email.com"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={contactFormData.phone}
+                    onChange={handleFormChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base"
+                    placeholder="+63 912 345 6789"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                    Message *
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    value={contactFormData.message}
+                    onChange={handleFormChange}
+                    required
+                    rows={4}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base resize-none"
+                    placeholder="Tell us about your interest in this property..."
+                  />
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className={`flex-1 bg-gradient-to-r from-primary-600 to-primary-700 text-white py-3 px-6 rounded-lg font-semibold hover:from-primary-700 hover:to-primary-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base ${
+                      isLoading ? 'opacity-75 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    {isLoading ? (
+                      <span className="flex items-center justify-center">
+                        <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Sending...
+                      </span>
+                    ) : (
+                      'Send Message'
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowContactForm(false)}
+                    className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors text-sm sm:text-base"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-xl p-8 text-center">
+            <svg className="animate-spin h-8 w-8 text-primary-600 mx-auto mb-4" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p className="text-gray-600">Loading...</p>
           </div>
         </div>
       )}

@@ -1,72 +1,75 @@
 import React, { useState, useEffect } from 'react';
-
-interface Property {
-  id: number;
-  title: string;
-  location: string;
-  bedrooms: number;
-  bathrooms: number;
-  area: string;
-  type: string;
-  features: string[];
-  image: string;
-  description: string;
-}
+import { supabase, ResidentialProperty } from '../lib/supabase';
 
 const ResidentialCarousel: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [properties, setProperties] = useState<ResidentialProperty[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const properties: Property[] = [
-    {
-      id: 1,
-      title: "Modern Family Home",
-      location: "Vigan City, Ilocos Sur",
-      bedrooms: 4,
-      bathrooms: 3,
-      area: "250 sqm",
-      type: "Single Family House",
-      features: ["2-Car Garage", "Garden", "Modern Kitchen", "Balcony"],
-      image: "/assets/images/modern-home.jpg",
-      description: "Beautiful modern family home with contemporary design and premium finishes."
-    },
-    {
-      id: 2,
-      title: "Traditional Filipino Villa",
-      location: "Bantay, Ilocos Sur",
-      bedrooms: 5,
-      bathrooms: 4,
-      area: "350 sqm",
-      type: "Villa",
-      features: ["Swimming Pool", "Landscaped Garden", "Traditional Design", "Spacious Living"],
-      image: "/assets/images/traditional-villa.jpg",
-      description: "Elegant traditional Filipino villa combining classic architecture with modern amenities."
-    },
-    {
-      id: 3,
-      title: "Beachfront Bungalow",
-      location: "Candon City, Ilocos Sur",
-      bedrooms: 3,
-      bathrooms: 2,
-      area: "180 sqm",
-      type: "Bungalow",
-      features: ["Ocean View", "Private Beach Access", "Outdoor Deck", "Sea Breeze"],
-      image: "/assets/images/beachfront-bungalow.jpg",
-      description: "Stunning beachfront property with panoramic ocean views and direct beach access."
-    },
-    {
-      id: 4,
-      title: "Executive Townhouse",
-      location: "Laoag City, Ilocos Norte",
-      bedrooms: 3,
-      bathrooms: 2,
-      area: "200 sqm",
-      type: "Townhouse",
-      features: ["Gated Community", "24/7 Security", "Clubhouse Access", "Parking"],
-      image: "/assets/images/executive-townhouse.jpg",
-      description: "Premium townhouse in exclusive gated community with complete amenities."
+  useEffect(() => {
+    fetchProperties();
+  }, []);
+
+  const fetchProperties = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('residential_properties')
+        .select('*')
+        .eq('status', 'Available')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        setProperties(data);
+      } else {
+        // Fallback to mock data if no properties in database
+        setProperties([
+          {
+            id: '1',
+            title: "Modern Family Home",
+            location: "Vigan City, Ilocos Sur",
+            bedrooms: 4,
+            bathrooms: 3,
+            area: "250 sqm",
+            type: "Single Family House",
+            features: ["2-Car Garage", "Garden", "Modern Kitchen", "Balcony"],
+            image: "/assets/images/modern-home.jpg",
+            description: "Beautiful modern family home with contemporary design and premium finishes.",
+            status: "Available",
+            is_featured: false,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }
+        ]);
+      }
+    } catch (error) {
+      console.error('Error fetching properties:', error);
+      // Fallback to mock data on error
+      setProperties([
+        {
+          id: '1',
+          title: "Modern Family Home",
+          location: "Vigan City, Ilocos Sur",
+          bedrooms: 4,
+          bathrooms: 3,
+          area: "250 sqm",
+          type: "Single Family House",
+          features: ["2-Car Garage", "Garden", "Modern Kitchen", "Balcony"],
+          image: "/assets/images/modern-home.jpg",
+          description: "Beautiful modern family home with contemporary design and premium finishes.",
+          status: "Available",
+          is_featured: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ]);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   useEffect(() => {
     if (isAutoPlaying) {
@@ -90,6 +93,27 @@ const ResidentialCarousel: React.FC = () => {
   };
 
   const currentProperty = properties[currentSlide];
+
+  if (loading) {
+    return (
+      <div className="relative w-full h-full bg-white rounded-xl overflow-hidden shadow-2xl flex items-center justify-center" style={{ minHeight: '400px' }}>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading properties...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (properties.length === 0) {
+    return (
+      <div className="relative w-full h-full bg-white rounded-xl overflow-hidden shadow-2xl flex items-center justify-center" style={{ minHeight: '400px' }}>
+        <div className="text-center p-8">
+          <p className="text-gray-600">No properties available at the moment.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full h-full bg-white rounded-xl overflow-hidden shadow-2xl">
