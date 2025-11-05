@@ -1,23 +1,67 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
+# Dependencies
+node_modules/
 /node_modules
+west-gate-realty/node_modules/
+server/node_modules/
 /.pnp
 .pnp.js
 
-# testing
-/coverage
-
-# production
-/build
-
-# misc
-.DS_Store
+# Environment variables (IMPORTANT - contains secrets!)
+.env
+server/.env
+west-gate-realty/.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
+# Build outputs
+dist/
+build/
+/build
+west-gate-realty/dist/
+west-gate-realty/build/
+
+# Database files
+server/*.db
+server/*.sqlite
+server/*.sqlite3
+
+# Uploads folder (local files)
+server/uploads/
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Test coverage
+coverage/
+/coverage
+.nyc_output/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
