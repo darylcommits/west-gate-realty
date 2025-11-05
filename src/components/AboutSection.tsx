@@ -17,7 +17,7 @@ const AboutSection: React.FC = () => {
               {/* Professional Photo */}
               <div className="flex justify-center md:justify-end">
                 <img
-                  src="/assets/images/img-avatar2.png"
+                  src="/assets/images/logo.jpg"
                   alt="Owner - West Gate Realty Services"
                   className="w-full max-w-md h-auto object-contain rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-300"
                   onError={(e) => {

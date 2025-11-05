@@ -1,12 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropertySearch from './PropertySearch';
 import LeadCapture from './LeadCapture';
 import MortgageCalculator from './MortgageCalculator';
 import AnimatedSection from './AnimatedSection';
 
+const API_BASE_URL = 'http://localhost:5000/api';
+
+interface Neighborhood {
+  name: string;
+  description: string;
+  highlights: string[];
+  image: string;
+  location: string;
+}
+
 const PropertyListings: React.FC = () => {
   const [showLeadForm, setShowLeadForm] = useState(false);
   const [selectedPropertyType, setSelectedPropertyType] = useState<string>('');
+  const [neighborhoods, setNeighborhoods] = useState<Neighborhood[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch neighborhoods from local API
+  useEffect(() => {
+    const fetchNeighborhoods = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/neighborhoods`);
+        const data = await response.json();
+
+        // Transform data to match component's expected format
+        const transformedNeighborhoods = data.map((hood: any) => ({
+          name: hood.name,
+          description: hood.description,
+          highlights: hood.highlights,
+          image: hood.image.startsWith('http')
+            ? hood.image
+            : `http://localhost:5000${hood.image}`,
+          location: hood.location
+        }));
+
+        setNeighborhoods(transformedNeighborhoods);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching neighborhoods:', error);
+        // Fallback to empty array if fetch fails
+        setNeighborhoods([]);
+        setLoading(false);
+      }
+    };
+
+    fetchNeighborhoods();
+  }, []);
 
   const handlePropertyTypeClick = (type: string) => {
     setSelectedPropertyType(type);
@@ -29,30 +72,18 @@ const PropertyListings: React.FC = () => {
           {/* Neighborhood Highlights */}
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-12">
             <h3 className="text-2xl font-bold text-primary-900 mb-8 text-center">Popular Neighborhoods</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[
-                {
-                  name: 'Sinait Heritage District',
-                  description: 'Historic charm meets modern living',
-                  highlights: ['UNESCO World Heritage Site', 'Tourist attractions', 'Cultural significance', 'Investment potential'],
-                  image: '/assets/images/sinait.jpg',
-                  location: 'Sinait, Ilocos Sur'
-                },
-                {
-                  name: 'Narvacan Coastal Area',
-                  description: 'Beachfront living and eco-tourism',
-                  highlights: ['Beach access', 'Natural beauty', 'Eco-friendly developments', 'Resort potential'],
-                  image: '/assets/images/narvacan.jpg',
-                  location: 'Narvacan, Ilocos Sur'
-                },
-                {
-                  name: 'San Ildefonso Agricultural Lands',
-                  description: 'Prime farming and agricultural hub',
-                  highlights: ['Fertile farmlands', 'Irrigation system', 'Agricultural developments', 'Investment opportunities'],
-                  image: '/assets/images/sanil.jpg',
-                  location: 'San Ildefonso, Ilocos Sur'
-                }
-              ].map((neighborhood, index) => (
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2" style={{ borderColor: '#c52528' }}></div>
+                <p className="mt-4" style={{ color: '#00284b' }}>Loading neighborhoods...</p>
+              </div>
+            ) : neighborhoods.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-xl" style={{ color: '#00284b' }}>No neighborhoods available at the moment.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {neighborhoods.map((neighborhood, index) => (
                 <div key={index} className="group cursor-pointer">
                   <div className="relative overflow-hidden rounded-xl mb-4">
                     <img 
@@ -97,7 +128,8 @@ const PropertyListings: React.FC = () => {
                   </div>
                 </div>
               ))}
-            </div>
+              </div>
+            )}
           </div>
 
           {/* Mortgage Calculator */}

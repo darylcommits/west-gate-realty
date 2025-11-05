@@ -16,7 +16,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-white shadow-lg fixed w-full top-0 z-50">
+    <header className="shadow-lg fixed w-full top-0 z-50" style={{ backgroundColor: '#c52528' }}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
@@ -42,40 +42,40 @@ const Header: React.FC = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
-            <button onClick={() => scrollToSection('home')} className="text-gray-700 hover:text-primary-600 transition-all duration-300 hover:scale-105 relative group">
+            <button onClick={() => scrollToSection('home')} className="text-white hover:text-gray-200 transition-all duration-300 hover:scale-105 relative group">
               Home
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
             </button>
-            <button onClick={() => scrollToSection('about')} className="text-gray-700 hover:text-primary-600 transition-all duration-300 hover:scale-105 relative group">
+            <button onClick={() => scrollToSection('about')} className="text-white hover:text-gray-200 transition-all duration-300 hover:scale-105 relative group">
               About
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
             </button>
-            <button onClick={() => scrollToSection('properties')} className="text-gray-700 hover:text-primary-600 transition-all duration-300 hover:scale-105 relative group">
+            <button onClick={() => scrollToSection('properties')} className="text-white hover:text-gray-200 transition-all duration-300 hover:scale-105 relative group">
               Properties
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
             </button>
-            <button onClick={() => scrollToSection('listings')} className="text-gray-700 hover:text-primary-600 transition-all duration-300 hover:scale-105 relative group">
+            <button onClick={() => scrollToSection('listings')} className="text-white hover:text-gray-200 transition-all duration-300 hover:scale-105 relative group">
               Listings
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
             </button>
-            <button onClick={() => scrollToSection('services')} className="text-gray-700 hover:text-primary-600 transition-all duration-300 hover:scale-105 relative group">
+            <button onClick={() => scrollToSection('services')} className="text-white hover:text-gray-200 transition-all duration-300 hover:scale-105 relative group">
               Services
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
             </button>
-            <button onClick={() => scrollToSection('certifications')} className="text-gray-700 hover:text-primary-600 transition-all duration-300 hover:scale-105 relative group">
+            <button onClick={() => scrollToSection('certifications')} className="text-white hover:text-gray-200 transition-all duration-300 hover:scale-105 relative group">
               Certifications
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
             </button>
-            <button onClick={() => scrollToSection('contact')} className="text-gray-700 hover:text-primary-600 transition-all duration-300 hover:scale-105 relative group">
+            <button onClick={() => scrollToSection('contact')} className="text-white hover:text-gray-200 transition-all duration-300 hover:scale-105 relative group">
               Contact
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
             </button>
-           
+
           </nav>
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden p-2"
+            className="md:hidden p-2 text-white"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,14 +88,14 @@ const Header: React.FC = () => {
         {isMenuOpen && (
           <div className="md:hidden py-4 animate-slide-up">
             <nav className="flex flex-col space-y-4">
-              <button onClick={() => scrollToSection('home')} className="text-left text-gray-700 hover:text-primary-600 transition-colors">Home</button>
-              <button onClick={() => scrollToSection('about')} className="text-left text-gray-700 hover:text-primary-600 transition-colors">About</button>
-              <button onClick={() => scrollToSection('properties')} className="text-left text-gray-700 hover:text-primary-600 transition-colors">Properties</button>
-              <button onClick={() => scrollToSection('listings')} className="text-left text-gray-700 hover:text-primary-600 transition-colors">Listings</button>
-              <button onClick={() => scrollToSection('services')} className="text-left text-gray-700 hover:text-primary-600 transition-colors">Services</button>
-              <button onClick={() => scrollToSection('certifications')} className="text-left text-gray-700 hover:text-primary-600 transition-colors">Certifications</button>
-              <button onClick={() => scrollToSection('contact')} className="text-left text-gray-700 hover:text-primary-600 transition-colors">Contact</button>
-             
+              <button onClick={() => scrollToSection('home')} className="text-left text-white hover:text-gray-200 transition-colors">Home</button>
+              <button onClick={() => scrollToSection('about')} className="text-left text-white hover:text-gray-200 transition-colors">About</button>
+              <button onClick={() => scrollToSection('properties')} className="text-left text-white hover:text-gray-200 transition-colors">Properties</button>
+              <button onClick={() => scrollToSection('listings')} className="text-left text-white hover:text-gray-200 transition-colors">Listings</button>
+              <button onClick={() => scrollToSection('services')} className="text-left text-white hover:text-gray-200 transition-colors">Services</button>
+              <button onClick={() => scrollToSection('certifications')} className="text-left text-white hover:text-gray-200 transition-colors">Certifications</button>
+              <button onClick={() => scrollToSection('contact')} className="text-left text-white hover:text-gray-200 transition-colors">Contact</button>
+
             </nav>
           </div>
         )}

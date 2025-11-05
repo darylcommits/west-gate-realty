@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+const API_BASE_URL = 'http://localhost:5000/api';
+
 interface Property {
   id: number;
   title: string;
   location: string;
   type: string;
   typeColor: string;
+  type_color: string;
   backgroundImage: string;
+  background_image: string;
   details: {
     price: string;
     size: string;
@@ -22,80 +26,38 @@ interface SwiperCarouselProps {
 const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
   const autoPlayRef = useRef<NodeJS.Timeout>();
 
-  const properties: Property[] = [
-    {
-      id: 1,
-      title: "Prime Agricultural Land",
-      location: "Ilocos Norte, Philippines",
-      type: "AGRICULTURAL",
-      typeColor: "#62667f",
-      backgroundImage: "/assets/images/agricultural.jpg",
-      details: {
-        price: "Starting from ₱15,000/sqm",
-        size: "2-50 hectares available",
-        features: ["Fertile Soil", "Water Access", "Road Access"],
-        description: "Prime farming properties with excellent soil quality and water access for agricultural development."
+  // Fetch properties from local API
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/carousel-properties`);
+        const data = await response.json();
+
+        // Transform data to match component's expected format
+        const transformedProperties = data.map((prop: any) => ({
+          ...prop,
+          typeColor: prop.type_color,
+          backgroundImage: prop.background_image.startsWith('http')
+            ? prop.background_image
+            : `http://localhost:5000${prop.background_image}`
+        }));
+
+        setProperties(transformedProperties);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching properties:', error);
+        // Fallback to empty array if fetch fails
+        setProperties([]);
+        setLoading(false);
       }
-    },
-    {
-      id: 2,
-      title: "Solar Development Projects",
-      location: "Ilocos Sur, Philippines",
-      type: "RENEWABLE",
-      typeColor: "#087ac4",
-      backgroundImage: "/assets/images/ssolar.jpg",
-      details: {
-        price: "Investment Opportunity",
-        size: "5-100 hectares",
-        features: ["Solar Panels", "Grid Connection", "Government Incentives"],
-        description: "Sustainable energy projects with modern solar infrastructure and government support."
-      }
-    },
-    {
-      id: 3,
-      title: "Narvacan Coastal Properties",
-      location: "Narvacan, Ilocos Sur",
-      type: "RESIDENTIAL",
-      typeColor: "#b45205",
-      backgroundImage: "/assets/images/narvacan.jpg",
-      details: {
-        price: "Starting from ₱25,000/sqm",
-        size: "500-2000 sqm lots",
-        features: ["Beach Access", "Modern Design", "Security"],
-        description: "Dream coastal properties with stunning ocean views and modern amenities."
-      }
-    },
-    {
-      id: 4,
-      title: "Sinait Heritage District",
-      location: "Sinait, Ilocos Sur",
-      type: "COMMERCIAL",
-      typeColor: "#087ac4",
-      backgroundImage: "/assets/images/sinait.jpg",
-      details: {
-        price: "Starting from ₱30,000/sqm",
-        size: "1000-5000 sqm",
-        features: ["High Traffic", "Business District", "Heritage Location"],
-        description: "Prime commercial properties in historic business districts with high foot traffic."
-      }
-    },
-    {
-      id: 5,
-      title: "San Ildefonso Agricultural Lands",
-      location: "San Ildefonso, Ilocos Sur",
-      type: "AGRICULTURAL",
-      typeColor: "#1b7402",
-      backgroundImage: "/assets/images/sanil.jpg",
-      details: {
-        price: "Starting from ₱12,000/sqm",
-        size: "1-20 hectares available",
-        features: ["Rich Farmland", "Irrigation System", "Strategic Location", "Agricultural Support"],
-        description: "Fertile agricultural lands in San Ildefonso with excellent farming potential and modern irrigation facilities."
-      }
-    }
-  ];
+    };
+
+    fetchProperties();
+  }, []);
 
   const nextSlide = () => {
     if (isTransitioning) return;
@@ -164,6 +126,29 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
     return 10 - adjustedDiff;
   };
 
+  // Show loading state
+  if (loading) {
+    return (
+      <section className="relative w-full min-h-screen flex justify-center items-center overflow-hidden">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2" style={{ borderColor: '#c52528' }}></div>
+          <p className="mt-4" style={{ color: '#00284b' }}>Loading properties...</p>
+        </div>
+      </section>
+    );
+  }
+
+  // Show message if no properties
+  if (properties.length === 0) {
+    return (
+      <section className="relative w-full min-h-screen flex justify-center items-center overflow-hidden">
+        <div className="text-center">
+          <p className="text-xl" style={{ color: '#00284b' }}>No properties available at the moment.</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="relative w-full min-h-screen flex justify-center items-center overflow-hidden">
       <div className="w-full pt-8 pb-8">
@@ -226,7 +211,7 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
                 <div className="absolute inset-0 bg-black/20 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                   <div className="text-white text-center">
                     <div className="text-2xl font-bold mb-2">Click for Details</div>
-                    <div className="text-sm opacity-90">{property.details.price}</div>
+                  
                   </div>
                 </div>
               </div>

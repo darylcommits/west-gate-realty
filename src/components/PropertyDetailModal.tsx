@@ -8,10 +8,11 @@ interface Property {
   typeColor: string;
   backgroundImage: string;
   details: {
-    price: string;
     size: string;
     features: string[];
     description: string;
+    video_url?: string | null;
+    detail_images?: string[];
   };
 }
 
@@ -125,21 +126,50 @@ const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({ property, isO
 
           {/* Content Section */}
           <div className="p-8">
-            {/* Price */}
-            <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
-              <div className="flex items-center">
-                <svg className="w-6 h-6 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                </svg>
-                <span className="text-2xl font-bold text-green-700">{property.details.price}</span>
-              </div>
-            </div>
+            
 
             {/* Description */}
             <div className="mb-6">
               <h3 className="text-xl font-semibold text-gray-800 mb-3">Description</h3>
               <p className="text-gray-600 leading-relaxed">{property.details.description}</p>
             </div>
+
+            {/* Video */}
+            {property.details.video_url && (
+              <div className="mb-6">
+                <h3 className="text-xl font-semibold text-gray-800 mb-3">Property Video</h3>
+                <div className="rounded-xl overflow-hidden">
+                  <video
+                    src={property.details.video_url.startsWith('http')
+                      ? property.details.video_url
+                      : `http://localhost:5000${property.details.video_url}`}
+                    controls
+                    className="w-full"
+                    style={{ maxHeight: '400px' }}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              </div>
+            )}
+
+            {/* Detail Images Gallery */}
+            {property.details.detail_images && property.details.detail_images.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-xl font-semibold text-gray-800 mb-3">Property Images</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {property.details.detail_images.map((image, index) => (
+                    <div key={index} className="relative group overflow-hidden rounded-lg">
+                      <img
+                        src={image.startsWith('http') ? image : `http://localhost:5000${image}`}
+                        alt={`Property detail ${index + 1}`}
+                        className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Size */}
             <div className="mb-6 p-4 bg-blue-50 rounded-xl border border-blue-200">

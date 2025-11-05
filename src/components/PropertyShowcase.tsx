@@ -1,12 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AnimatedSection from './AnimatedSection';
+
+const API_BASE_URL = 'http://localhost:5000/api';
+
+interface FeaturedProject {
+  title: string;
+  description: string;
+  image: string;
+  bgGradient: string;
+  bg_gradient: string;
+  features: string[];
+  stats: { [key: string]: string };
+  type: string;
+}
 
 const PropertyShowcase: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [properties, setProperties] = useState<FeaturedProject[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch featured projects from local API
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/featured-projects`);
+        const data = await response.json();
+
+        // Transform data to match component's expected format
+        const transformedProjects = data.map((proj: any) => ({
+          ...proj,
+          bgGradient: proj.bg_gradient,
+          image: proj.image.startsWith('http')
+            ? proj.image
+            : `http://localhost:5000${proj.image}`
+        }));
+
+        setProperties(transformedProjects);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching featured projects:', error);
+        // Fallback to empty array if fetch fails
+        setProperties([]);
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   const handleLearnMore = (propertyType: string) => {
     setIsLoading(true);
-    
+
     // Simulate loading and then scroll to listings section
     setTimeout(() => {
       setIsLoading(false);
@@ -30,35 +74,6 @@ const PropertyShowcase: React.FC = () => {
     // In a real app, this would trigger a download
     alert('Brochure download feature would be implemented here');
   };
-  const properties = [
-    {
-      title: "San Ildefonso Agricultural Lands",
-      description: "Fertile farming properties in San Ildefonso with excellent irrigation systems and strategic locations for sustainable agriculture.",
-      image: "/assets/images/sanil.jpg",
-      bgGradient: "from-green-400 via-green-500 to-green-600",
-      features: ["Prime farming location", "Irrigation system", "Rich soil quality", "Agricultural support"],
-      stats: { size: "1-20 hectares", location: "San Ildefonso" },
-      type: "Agricultural"
-    },
-    {
-      title: "Solar Farm Developments",
-      description: "Cutting-edge renewable energy projects with state-of-the-art solar panel installations for sustainable power generation.",
-      image: "/assets/images/ssolar.jpg",
-      bgGradient: "from-yellow-400 via-orange-500 to-red-500",
-      features: ["High energy yield", "Government incentives", "Long-term ROI", "Environmental impact"],
-      stats: { capacity: "50-500 MW", status: "Available" },
-      type: "Solar Projects"
-    },
-    {
-      title: "Sinait Heritage Properties",
-      description: "Strategic heritage real estate opportunities in high-traffic areas perfect for business expansion and investment.",
-      image: "/assets/images/sinait.jpg",
-      bgGradient: "from-blue-400 via-blue-500 to-blue-600",
-      features: ["Prime locations", "High foot traffic", "Heritage value", "Investment potential"],
-      stats: { area: "100-1000 sqm", type: "Commercial" },
-      type: "Commercial"
-    }
-  ];
 
   return (
     <AnimatedSection>
@@ -80,8 +95,18 @@ const PropertyShowcase: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {properties.map((property, index) => (
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2" style={{ borderColor: '#c52528' }}></div>
+              <p className="mt-4" style={{ color: '#00284b' }}>Loading featured projects...</p>
+            </div>
+          ) : properties.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-xl" style={{ color: '#00284b' }}>No featured projects available at the moment.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {properties.map((property, index) => (
               <div 
                 key={index}
                 className="group relative bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-500 hover:shadow-2xl"
@@ -170,7 +195,8 @@ const PropertyShowcase: React.FC = () => {
                 <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-white/20 to-transparent"></div>
               </div>
             ))}
-          </div>
+            </div>
+          )}
 
           {/* Call to Action */}
           <div className="text-center mt-16">

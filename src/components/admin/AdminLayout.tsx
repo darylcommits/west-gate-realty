@@ -13,7 +13,10 @@ import {
   CogIcon,
   Bars3Icon,
   XMarkIcon,
-  ArrowRightOnRectangleIcon
+  ArrowRightOnRectangleIcon,
+  PhotoIcon,
+  RectangleStackIcon,
+  MapIcon
 } from '@heroicons/react/24/outline';
 
 interface AdminLayoutProps {
@@ -21,22 +24,22 @@ interface AdminLayoutProps {
   onLogout?: () => void;
 }
 
+interface NavigationItem {
+  name: string;
+  href: string;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  badge?: string;
+}
+
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children, onLogout }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
-  const navigation = [
+  const navigation: NavigationItem[] = [
     { name: 'Dashboard', href: '/admin', icon: HomeIcon },
-    { name: 'Properties', href: '/admin/properties', icon: BuildingOffice2Icon },
-    { name: 'Residential Properties', href: '/admin/residential-properties', icon: HomeIcon },
-    { name: 'Services', href: '/admin/services', icon: WrenchScrewdriverIcon },
-    { name: 'Certifications', href: '/admin/certifications', icon: ShieldCheckIcon },
-    { name: 'Neighborhoods', href: '/admin/neighborhoods', icon: MapPinIcon },
-    { name: 'Property Types', href: '/admin/property-types', icon: TagIcon },
-    { name: 'Portfolio', href: '/admin/portfolio', icon: BriefcaseIcon },
-    { name: 'Featured Projects', href: '/admin/featured-projects', icon: StarIcon },
-    { name: 'Profile', href: '/admin/profile', icon: UserIcon },
-    { name: 'Settings', href: '/admin/settings', icon: CogIcon },
+    { name: 'Carousel Properties', href: '/admin/carousel-properties', icon: PhotoIcon, badge: 'Local' },
+    { name: 'Featured Projects (Local)', href: '/admin/featured-projects-local', icon: RectangleStackIcon, badge: 'Local' },
+    { name: 'Neighborhoods (Local)', href: '/admin/neighborhoods-local', icon: MapIcon, badge: 'Local' },
   ];
 
   const isActive = (href: string) => {
@@ -62,20 +65,27 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, onLogout }) => {
               <XMarkIcon className="h-6 w-6" />
             </button>
           </div>
-          <nav className="flex-1 space-y-1 px-2 py-4">
+          <nav className="flex-1 space-y-1 px-2 py-4 overflow-y-auto">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
+                className={`group flex items-center justify-between px-2 py-2 text-sm font-medium rounded-md ${
                   isActive(item.href)
                     ? 'bg-blue-100 text-blue-900'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                 }`}
                 onClick={() => setSidebarOpen(false)}
               >
-                <item.icon className="mr-3 h-5 w-5 flex-shrink-0" />
-                {item.name}
+                <div className="flex items-center">
+                  <item.icon className="mr-3 h-5 w-5 flex-shrink-0" />
+                  <span>{item.name}</span>
+                </div>
+                {item.badge && (
+                  <span className="ml-2 px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                    {item.badge}
+                  </span>
+                )}
               </Link>
             ))}
           </nav>
@@ -100,19 +110,26 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, onLogout }) => {
           <div className="flex h-16 items-center px-4">
             <h1 className="text-xl font-bold text-gray-900">Admin Panel</h1>
           </div>
-          <nav className="flex-1 space-y-1 px-2 py-4">
+          <nav className="flex-1 space-y-1 px-2 py-4 overflow-y-auto">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
+                className={`group flex items-center justify-between px-2 py-2 text-sm font-medium rounded-md ${
                   isActive(item.href)
                     ? 'bg-blue-100 text-blue-900'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
-                <item.icon className="mr-3 h-5 w-5 flex-shrink-0" />
-                {item.name}
+                <div className="flex items-center">
+                  <item.icon className="mr-3 h-5 w-5 flex-shrink-0" />
+                  <span>{item.name}</span>
+                </div>
+                {item.badge && (
+                  <span className="ml-2 px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                    {item.badge}
+                  </span>
+                )}
               </Link>
             ))}
           </nav>
@@ -144,22 +161,22 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, onLogout }) => {
           </button>
           <div className="flex flex-1 justify-between px-4">
             <div className="flex flex-1 items-center">
-              <h2 className="text-lg font-semibold text-gray-900">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 truncate">
                 {navigation.find(item => isActive(item.href))?.name || 'Dashboard'}
               </h2>
             </div>
-            <div className="ml-4 flex items-center md:ml-6">
+            <div className="ml-2 sm:ml-4 flex items-center md:ml-6">
               <div className="relative">
-                <div className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-700">
+                <div className="flex items-center space-x-2 sm:space-x-4">
+                  <span className="hidden md:inline text-sm text-gray-700">
                     {localStorage.getItem('adminEmail') || 'Admin User'}
                   </span>
-                  <button 
+                  <button
                     onClick={onLogout}
-                    className="flex items-center px-3 py-2 text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                    className="flex items-center px-2 sm:px-3 py-2 text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
                   >
-                    <ArrowRightOnRectangleIcon className="h-4 w-4 mr-1" />
-                    Logout
+                    <ArrowRightOnRectangleIcon className="h-4 w-4 sm:mr-1" />
+                    <span className="hidden sm:inline">Logout</span>
                   </button>
                 </div>
               </div>
