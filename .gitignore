@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+west-gate-realty/node_modules/
+server/node_modules/
+
+# Environment variables (IMPORTANT - contains secrets!)
+.env
+server/.env
+west-gate-realty/.env
+
+# Build outputs
+dist/
+build/
+west-gate-realty/dist/
+west-gate-realty/build/
+
+# Database files
+server/*.db
+server/*.sqlite
+server/*.sqlite3
+
+# Uploads folder (local files)
+server/uploads/
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Production
+/build
