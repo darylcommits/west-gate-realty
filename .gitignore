@@ -1,16 +1,26 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
 # Dependencies
 node_modules/
+/node_modules
 west-gate-realty/node_modules/
 server/node_modules/
+/.pnp
+.pnp.js
 
 # Environment variables (IMPORTANT - contains secrets!)
 .env
 server/.env
 west-gate-realty/.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Build outputs
 dist/
 build/
+/build
 west-gate-realty/dist/
 west-gate-realty/build/
 
@@ -28,7 +38,10 @@ server/uploads/
 *.swp
 *.swo
 *~
+
+# OS files
 .DS_Store
+Thumbs.db
 
 # Logs
 *.log
@@ -37,10 +50,6 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
-# OS files
-Thumbs.db
-.DS_Store
-
 # Temporary files
 *.tmp
 *.temp
@@ -48,6 +57,7 @@ Thumbs.db
 
 # Test coverage
 coverage/
+/coverage
 .nyc_output/
 
 # Optional npm cache directory
@@ -55,6 +65,3 @@ coverage/
 
 # Optional eslint cache
 .eslintcache
-
-# Production
-/build
