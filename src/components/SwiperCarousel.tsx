@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+// Use environment variable for API URL, fallback to localhost for development
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 interface Property {
   id: number;
@@ -30,8 +31,7 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
   const [loading, setLoading] = useState(true);
   const autoPlayRef = useRef<NodeJS.Timeout>();
 
-<<<<<<< HEAD
-  // Fetch properties from local API
+  // Fetch properties from API
   useEffect(() => {
     const fetchProperties = async () => {
       try {
@@ -44,7 +44,13 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
           typeColor: prop.type_color,
           backgroundImage: prop.background_image.startsWith('http')
             ? prop.background_image
-            : `http://localhost:5000${prop.background_image}`
+            : `${API_BASE_URL.replace('/api', '')}${prop.background_image}`,
+          details: {
+            price: prop.price,
+            size: prop.size,
+            features: prop.features || [],
+            description: prop.description
+          }
         }));
 
         setProperties(transformedProperties);
@@ -59,76 +65,6 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
 
     fetchProperties();
   }, []);
-=======
-  const properties: Property[] = [
-    {
-      id: 1,
-      title: "Prime Agricultural Land",
-      location: "Ilocos Norte, Philippines",
-      type: "AGRICULTURAL",
-      typeColor: "#62667f",
-      backgroundImage: "/assets/images/agricultural.jpg",
-      details: {
-        size: "2-50 hectares available",
-        features: ["Fertile Soil", "Water Access", "Road Access"],
-        description: "Prime farming properties with excellent soil quality and water access for agricultural development."
-      }
-    },
-    {
-      id: 2,
-      title: "Solar Development Projects",
-      location: "Ilocos Sur, Philippines",
-      type: "RENEWABLE",
-      typeColor: "#087ac4",
-      backgroundImage: "/assets/images/ssolar.jpg",
-      details: {
-        price: "Investment Opportunity",
-        size: "5-100 hectares",
-        features: ["Solar Panels", "Grid Connection", "Government Incentives"],
-        description: "Sustainable energy projects with modern solar infrastructure and government support."
-      }
-    },
-    {
-      id: 3,
-      title: "Narvacan Coastal Properties",
-      location: "Narvacan, Ilocos Sur",
-      type: "RESIDENTIAL",
-      typeColor: "#b45205",
-      backgroundImage: "/assets/images/narvacan.jpg",
-      details: {
-        size: "500-2000 sqm lots",
-        features: ["Beach Access", "Modern Design", "Security"],
-        description: "Dream coastal properties with stunning ocean views and modern amenities."
-      }
-    },
-    {
-      id: 4,
-      title: "Sinait Heritage District",
-      location: "Sinait, Ilocos Sur",
-      type: "COMMERCIAL",
-      typeColor: "#087ac4",
-      backgroundImage: "/assets/images/sinait.jpg",
-      details: {
-        size: "1000-5000 sqm",
-        features: ["High Traffic", "Business District", "Heritage Location"],
-        description: "Prime commercial properties in historic business districts with high foot traffic."
-      }
-    },
-    {
-      id: 5,
-      title: "San Ildefonso Agricultural Lands",
-      location: "San Ildefonso, Ilocos Sur",
-      type: "AGRICULTURAL",
-      typeColor: "#1b7402",
-      backgroundImage: "/assets/images/sanil.jpg",
-      details: {
-        size: "1-20 hectares available",
-        features: ["Rich Farmland", "Irrigation System", "Strategic Location", "Agricultural Support"],
-        description: "Fertile agricultural lands in San Ildefonso with excellent farming potential and modern irrigation facilities."
-      }
-    }
-  ];
->>>>>>> aa9fb9a815dcde14bc5436ed805f026bd93c518b
 
   const nextSlide = () => {
     if (isTransitioning) return;
@@ -282,11 +218,6 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
                 <div className="absolute inset-0 bg-black/20 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                   <div className="text-white text-center">
                     <div className="text-2xl font-bold mb-2">Click for Details</div>
-<<<<<<< HEAD
-                  
-=======
-            
->>>>>>> aa9fb9a815dcde14bc5436ed805f026bd93c518b
                   </div>
                 </div>
               </div>
