@@ -4,7 +4,7 @@ import LeadCapture from './LeadCapture';
 import MortgageCalculator from './MortgageCalculator';
 import AnimatedSection from './AnimatedSection';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';
 
 interface Neighborhood {
   name: string;
@@ -34,7 +34,7 @@ const PropertyListings: React.FC = () => {
           highlights: hood.highlights,
           image: hood.image.startsWith('http')
             ? hood.image
-            : `http://localhost:5000${hood.image}`,
+            : `${API_BASE_URL.replace('/api', '')}${hood.image}`,
           location: hood.location
         }));
 

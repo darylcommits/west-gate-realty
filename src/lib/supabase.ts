@@ -57,8 +57,7 @@ export interface Neighborhood {
   description: string;
   image: string;
   location: string;
-  average_price?: number;
-  amenities: string[];
+  highlights: string[];
   is_popular: boolean;
   order_index: number;
   created_at: string;
@@ -96,11 +95,10 @@ export interface FeaturedProject {
   title: string;
   description: string;
   image: string;
-  project_type: string;
-  location: string;
-  status: 'Planning' | 'Under Construction' | 'Completed';
-  start_date?: string;
-  completion_date?: string;
+  bg_gradient: string;
+  features: string[];
+  stats: { [key: string]: string };
+  type: string;
   is_featured: boolean;
   order_index: number;
   created_at: string;

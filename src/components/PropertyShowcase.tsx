@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AnimatedSection from './AnimatedSection';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';
 
 interface FeaturedProject {
   title: string;
@@ -32,7 +32,7 @@ const PropertyShowcase: React.FC = () => {
           bgGradient: proj.bg_gradient,
           image: proj.image.startsWith('http')
             ? proj.image
-            : `http://localhost:5000${proj.image}`
+            : `${API_BASE_URL.replace('/api', '')}${proj.image}`
         }));
 
         setProperties(transformedProjects);
