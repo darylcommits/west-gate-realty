@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { PlusIcon, PencilIcon, TrashIcon, PhotoIcon, VideoCameraIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';
+const BASE_URL = API_BASE_URL.replace('/api', '');
 
 interface CarouselProperty {
   id: number;
@@ -220,11 +221,11 @@ const CarouselManagement: React.FC = () => {
       video_url: property.video_url || '',
       detail_images: property.detail_images || []
     });
-    setImagePreview(property.background_image.startsWith('http') ? property.background_image : `http://localhost:5000${property.background_image}`);
+    setImagePreview(property.background_image.startsWith('http') ? property.background_image : `${BASE_URL}${property.background_image}`);
 
     // Set video preview if exists
     if (property.video_url) {
-      setVideoPreview(property.video_url.startsWith('http') ? property.video_url : `http://localhost:5000${property.video_url}`);
+      setVideoPreview(property.video_url.startsWith('http') ? property.video_url : `${BASE_URL}${property.video_url}`);
     }
 
     setShowModal(true);
@@ -332,7 +333,7 @@ const CarouselManagement: React.FC = () => {
           <div key={property.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="relative h-48">
               <img
-                src={property.background_image.startsWith('http') ? property.background_image : `http://localhost:5000${property.background_image}`}
+                src={property.background_image.startsWith('http') ? property.background_image : `${BASE_URL}${property.background_image}`}
                 alt={property.title}
                 className="w-full h-full object-cover"
               />
@@ -591,7 +592,7 @@ const CarouselManagement: React.FC = () => {
                       {formData.detail_images.map((img, index) => (
                         <div key={index} className="relative">
                           <img
-                            src={img.startsWith('http') ? img : `http://localhost:5000${img}`}
+                            src={img.startsWith('http') ? img : `${BASE_URL}${img}`}
                             alt={`Detail ${index + 1}`}
                             className="w-full h-24 object-cover rounded"
                           />
