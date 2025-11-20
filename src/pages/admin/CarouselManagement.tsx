@@ -191,10 +191,17 @@ const CarouselManagement: React.FC = () => {
 
       const method = editingProperty ? 'PUT' : 'POST';
 
+      // Add timeout to prevent infinite hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
       const response = await fetch(url, {
         method,
-        body: formDataToSend
+        body: formDataToSend,
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         await fetchProperties();
@@ -206,17 +213,27 @@ const CarouselManagement: React.FC = () => {
         // Auto-hide success message after 5 seconds
         setTimeout(() => setMessage(null), 5000);
       } else {
-        const error = await response.json();
+        let errorMessage = 'Failed to save property';
+        try {
+          const error = await response.json();
+          errorMessage = error.error || errorMessage;
+        } catch {
+          errorMessage = `Server error: ${response.status} ${response.statusText}`;
+        }
         setMessage({
           type: 'error',
-          text: `Error: ${error.error || 'Failed to save property'}`
+          text: `Error: ${errorMessage}`
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving property:', error);
+      let errorText = 'Error saving property. Please check your connection and try again.';
+      if (error.name === 'AbortError') {
+        errorText = 'Request timed out. Please check if the backend server is running.';
+      }
       setMessage({
         type: 'error',
-        text: 'Error saving property. Please check your connection and try again.'
+        text: errorText
       });
     } finally {
       setSubmitting(false);
