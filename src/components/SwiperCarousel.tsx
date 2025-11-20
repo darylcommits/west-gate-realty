@@ -31,6 +31,7 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
   const autoPlayRef = useRef<NodeJS.Timeout>();
 
   // Fetch properties from API
@@ -59,6 +60,11 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
 
         setProperties(transformedProperties);
         setLoading(false);
+
+        // Enable transitions after a short delay to prevent initial animation
+        setTimeout(() => {
+          setIsInitialized(true);
+        }, 100);
       } catch (error) {
         console.error('Error fetching properties:', error);
         // Fallback to empty array if fetch fails
@@ -167,7 +173,7 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
           {properties.map((property, index) => (
             <div
               key={property.id}
-              className="absolute transition-all duration-500 ease-out cursor-pointer"
+              className={`absolute cursor-pointer ${isInitialized ? 'transition-all duration-500 ease-out' : ''}`}
               style={{
                 transform: getSlideTransform(index),
                 opacity: getSlideOpacity(index),
