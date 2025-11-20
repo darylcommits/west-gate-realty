@@ -194,16 +194,70 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
     <section className="relative w-full min-h-screen flex justify-center items-center overflow-hidden">
       <div className="w-full pt-8 pb-8">
         <div className="relative flex items-center justify-center h-[500px]">
-          {properties.map((property, index) => (
+          {properties.map((property, index) => {
+            const total = properties.length;
+            let diff = index - currentSlide;
+
+            // Normalize diff to be in range [-total/2, total/2]
+            if (diff > total / 2) diff -= total;
+            if (diff < -total / 2) diff += total;
+
+            // Calculate position based on diff
+            let translateX = 0;
+            let scale = 1;
+            let rotateY = 0;
+            let zIndex = 10;
+            let opacity = 1;
+
+            if (diff === 0) {
+              translateX = 0;
+              scale = 1;
+              rotateY = 0;
+              zIndex = 10;
+            } else if (diff === 1) {
+              translateX = 200;
+              scale = 0.85;
+              rotateY = -15;
+              zIndex = 9;
+            } else if (diff === -1) {
+              translateX = -200;
+              scale = 0.85;
+              rotateY = 15;
+              zIndex = 9;
+            } else if (diff === 2) {
+              translateX = 380;
+              scale = 0.7;
+              rotateY = -25;
+              zIndex = 8;
+            } else if (diff === -2) {
+              translateX = -380;
+              scale = 0.7;
+              rotateY = 25;
+              zIndex = 8;
+            } else if (diff > 0) {
+              translateX = 500;
+              scale = 0.5;
+              rotateY = -30;
+              zIndex = 7;
+              opacity = 0.3;
+            } else {
+              translateX = -500;
+              scale = 0.5;
+              rotateY = 30;
+              zIndex = 7;
+              opacity = 0.3;
+            }
+
+            return (
             <div
               key={property.id}
               className={`absolute cursor-pointer ${isInitialized ? 'transition-all duration-500 ease-out' : ''}`}
               style={{
                 left: '50%',
-                transform: getSlideTransform(index),
-                opacity: getSlideOpacity(index),
-                zIndex: getSlideZIndex(index),
-                filter: index === currentSlide ? 'blur(0px)' : 'blur(1px)',
+                transform: `translateX(calc(-50% + ${translateX}px)) scale(${scale}) rotateY(${rotateY}deg)`,
+                opacity: opacity,
+                zIndex: zIndex,
+                filter: diff === 0 ? 'blur(0px)' : 'blur(1px)',
               }}
               onClick={() => onPropertyClick?.(property)}
             >
