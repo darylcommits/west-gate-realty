@@ -37,9 +37,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, onLogout }) => {
 
   const navigation: NavigationItem[] = [
     { name: 'Dashboard', href: '/admin', icon: HomeIcon },
-    { name: 'Carousel Properties', href: '/admin/carousel-properties', icon: PhotoIcon, badge: 'Local' },
-    { name: 'Featured Projects (Local)', href: '/admin/featured-projects-local', icon: RectangleStackIcon, badge: 'Local' },
-    { name: 'Neighborhoods (Local)', href: '/admin/neighborhoods-local', icon: MapIcon, badge: 'Local' },
+    { name: 'Carousel Properties', href: '/admin/carousel-properties', icon: PhotoIcon },
+    { name: 'Featured Projects', href: '/admin/featured-projects', icon: RectangleStackIcon },
+    { name: 'Neighborhoods', href: '/admin/neighborhoods', icon: MapIcon },
   ];
 
   const isActive = (href: string) => {
