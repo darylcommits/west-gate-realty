@@ -28,6 +28,8 @@ const CarouselManagement: React.FC = () => {
   const [editingProperty, setEditingProperty] = useState<CarouselProperty | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -140,6 +142,8 @@ const CarouselManagement: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
+    setMessage(null);
 
     const formDataToSend = new FormData();
     formDataToSend.append('title', formData.title);
@@ -193,15 +197,29 @@ const CarouselManagement: React.FC = () => {
       });
 
       if (response.ok) {
-        fetchProperties();
+        await fetchProperties();
         closeModal();
+        setMessage({
+          type: 'success',
+          text: editingProperty ? 'Property updated successfully!' : 'Property created successfully!'
+        });
+        // Auto-hide success message after 5 seconds
+        setTimeout(() => setMessage(null), 5000);
       } else {
         const error = await response.json();
-        alert(`Error: ${error.error}`);
+        setMessage({
+          type: 'error',
+          text: `Error: ${error.error || 'Failed to save property'}`
+        });
       }
     } catch (error) {
       console.error('Error saving property:', error);
-      alert('Error saving property');
+      setMessage({
+        type: 'error',
+        text: 'Error saving property. Please check your connection and try again.'
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -301,6 +319,23 @@ const CarouselManagement: React.FC = () => {
 
   return (
     <div className="p-6">
+      {/* Status Message */}
+      {message && (
+        <div className={`mb-4 p-4 rounded-lg flex items-center justify-between ${
+          message.type === 'success'
+            ? 'bg-green-100 border border-green-400 text-green-700'
+            : 'bg-red-100 border border-red-400 text-red-700'
+        }`}>
+          <span>{message.text}</span>
+          <button
+            onClick={() => setMessage(null)}
+            className="ml-4 font-bold hover:opacity-70"
+          >
+            &times;
+          </button>
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: '#00284b' }}>Carousel Properties</h1>
         <button
@@ -662,17 +697,33 @@ const CarouselManagement: React.FC = () => {
                 <div className="flex gap-4">
                   <button
                     type="submit"
-                    className="flex-1 px-4 py-2 text-white rounded-lg transition-colors"
-                    style={{ backgroundColor: '#c52528' }}
-                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#a01d1f'}
-                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#c52528'}
+                    disabled={submitting}
+                    className={`flex-1 px-4 py-2 text-white rounded-lg transition-colors flex items-center justify-center gap-2 ${
+                      submitting ? 'opacity-70 cursor-not-allowed' : ''
+                    }`}
+                    style={{ backgroundColor: submitting ? '#999' : '#c52528' }}
+                    onMouseOver={(e) => !submitting && (e.currentTarget.style.backgroundColor = '#a01d1f')}
+                    onMouseOut={(e) => !submitting && (e.currentTarget.style.backgroundColor = '#c52528')}
                   >
-                    {editingProperty ? 'Update Property' : 'Create Property'}
+                    {submitting ? (
+                      <>
+                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        {editingProperty ? 'Updating...' : 'Creating...'}
+                      </>
+                    ) : (
+                      editingProperty ? 'Update Property' : 'Create Property'
+                    )}
                   </button>
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                    disabled={submitting}
+                    className={`flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors ${
+                      submitting ? 'opacity-70 cursor-not-allowed' : ''
+                    }`}
                   >
                     Cancel
                   </button>
