@@ -111,36 +111,58 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
   }, [currentSlide, isTransitioning]);
 
   const getSlideTransform = (index: number) => {
-    const diff = index - currentSlide;
-    const adjustedDiff = ((diff % properties.length) + properties.length) % properties.length;
-    
-    if (adjustedDiff === 0) {
+    if (properties.length === 0) return 'translateX(0) scale(1)';
+
+    const total = properties.length;
+    let diff = index - currentSlide;
+
+    // Normalize diff to be in range [-total/2, total/2]
+    if (diff > total / 2) diff -= total;
+    if (diff < -total / 2) diff += total;
+
+    if (diff === 0) {
       return 'translateX(0) scale(1) rotateY(0deg)';
-    } else if (adjustedDiff === 1) {
-      return 'translateX(120px) scale(0.85) rotateY(-15deg)';
-    } else if (adjustedDiff === properties.length - 1) {
-      return 'translateX(-120px) scale(0.85) rotateY(15deg)';
-    } else if (adjustedDiff === 2) {
-      return 'translateX(220px) scale(0.7) rotateY(-25deg)';
-    } else if (adjustedDiff === properties.length - 2) {
-      return 'translateX(-220px) scale(0.7) rotateY(25deg)';
+    } else if (diff === 1) {
+      return 'translateX(150px) scale(0.85) rotateY(-15deg)';
+    } else if (diff === -1) {
+      return 'translateX(-150px) scale(0.85) rotateY(15deg)';
+    } else if (diff === 2) {
+      return 'translateX(280px) scale(0.7) rotateY(-25deg)';
+    } else if (diff === -2) {
+      return 'translateX(-280px) scale(0.7) rotateY(25deg)';
+    } else if (diff > 0) {
+      return 'translateX(400px) scale(0.5) rotateY(-30deg)';
     } else {
-      return 'translateX(0) scale(0.5) rotateY(0deg)';
+      return 'translateX(-400px) scale(0.5) rotateY(30deg)';
     }
   };
 
   const getSlideOpacity = (index: number) => {
-    const diff = index - currentSlide;
-    const adjustedDiff = ((diff % properties.length) + properties.length) % properties.length;
-    
-    if (adjustedDiff <= 2) return 1;
+    if (properties.length === 0) return 1;
+
+    const total = properties.length;
+    let diff = index - currentSlide;
+
+    // Normalize diff
+    if (diff > total / 2) diff -= total;
+    if (diff < -total / 2) diff += total;
+
+    const absDiff = Math.abs(diff);
+    if (absDiff <= 2) return 1;
     return 0.3;
   };
 
   const getSlideZIndex = (index: number) => {
-    const diff = index - currentSlide;
-    const adjustedDiff = Math.abs(((diff % properties.length) + properties.length) % properties.length);
-    return 10 - adjustedDiff;
+    if (properties.length === 0) return 10;
+
+    const total = properties.length;
+    let diff = index - currentSlide;
+
+    // Normalize diff
+    if (diff > total / 2) diff -= total;
+    if (diff < -total / 2) diff += total;
+
+    return 10 - Math.abs(diff);
   };
 
   // Show loading state
