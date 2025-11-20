@@ -111,7 +111,8 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
   }, [currentSlide, isTransitioning]);
 
   const getSlideTransform = (index: number) => {
-    if (properties.length === 0) return 'translateX(0) scale(1)';
+    // Base transform includes -50% to center the element (since we use left: 50%)
+    if (properties.length === 0) return 'translateX(-50%) scale(1)';
 
     const total = properties.length;
     let diff = index - currentSlide;
@@ -120,20 +121,21 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
     if (diff > total / 2) diff -= total;
     if (diff < -total / 2) diff += total;
 
+    // Calculate X offset: -50% centers, then add position offset
     if (diff === 0) {
-      return 'translateX(0) scale(1) rotateY(0deg)';
+      return 'translateX(-50%) scale(1) rotateY(0deg)';
     } else if (diff === 1) {
-      return 'translateX(150px) scale(0.85) rotateY(-15deg)';
+      return 'translateX(calc(-50% + 200px)) scale(0.85) rotateY(-15deg)';
     } else if (diff === -1) {
-      return 'translateX(-150px) scale(0.85) rotateY(15deg)';
+      return 'translateX(calc(-50% - 200px)) scale(0.85) rotateY(15deg)';
     } else if (diff === 2) {
-      return 'translateX(280px) scale(0.7) rotateY(-25deg)';
+      return 'translateX(calc(-50% + 380px)) scale(0.7) rotateY(-25deg)';
     } else if (diff === -2) {
-      return 'translateX(-280px) scale(0.7) rotateY(25deg)';
+      return 'translateX(calc(-50% - 380px)) scale(0.7) rotateY(25deg)';
     } else if (diff > 0) {
-      return 'translateX(400px) scale(0.5) rotateY(-30deg)';
+      return 'translateX(calc(-50% + 500px)) scale(0.5) rotateY(-30deg)';
     } else {
-      return 'translateX(-400px) scale(0.5) rotateY(30deg)';
+      return 'translateX(calc(-50% - 500px)) scale(0.5) rotateY(30deg)';
     }
   };
 
@@ -197,6 +199,7 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
               key={property.id}
               className={`absolute cursor-pointer ${isInitialized ? 'transition-all duration-500 ease-out' : ''}`}
               style={{
+                left: '50%',
                 transform: getSlideTransform(index),
                 opacity: getSlideOpacity(index),
                 zIndex: getSlideZIndex(index),
