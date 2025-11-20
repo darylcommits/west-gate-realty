@@ -256,11 +256,21 @@ const CarouselManagement: React.FC = () => {
       video_url: property.video_url || '',
       detail_images: property.detail_images || []
     });
+
+    // Reset file states
+    setImageFile(null);
+    setVideoFile(null);
+    setDetailImageFiles([]);
+    setDetailImagePreviews([]);
+
+    // Set image preview
     setImagePreview(property.background_image.startsWith('http') ? property.background_image : `${BASE_URL}${property.background_image}`);
 
-    // Set video preview if exists
+    // Set video preview if exists, otherwise reset to null
     if (property.video_url) {
       setVideoPreview(property.video_url.startsWith('http') ? property.video_url : `${BASE_URL}${property.video_url}`);
+    } else {
+      setVideoPreview(null);
     }
 
     setShowModal(true);
