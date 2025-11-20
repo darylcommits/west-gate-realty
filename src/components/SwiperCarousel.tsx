@@ -17,6 +17,8 @@ interface Property {
     size: string;
     features: string[];
     description: string;
+    video_url?: string | null;
+    detail_images?: string[];
   };
 }
 
@@ -49,7 +51,9 @@ const SwiperCarousel: React.FC<SwiperCarouselProps> = ({ onPropertyClick }) => {
             price: prop.price,
             size: prop.size,
             features: prop.features || [],
-            description: prop.description
+            description: prop.description,
+            video_url: prop.video_url || null,
+            detail_images: prop.detail_images || []
           }
         }));
 

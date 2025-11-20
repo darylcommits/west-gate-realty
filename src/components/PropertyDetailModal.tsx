@@ -1,5 +1,8 @@
 import React, { useEffect } from 'react';
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';
+const BASE_URL = API_BASE_URL.replace('/api', '');
+
 interface Property {
   id: number;
   title: string;
@@ -142,7 +145,7 @@ const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({ property, isO
                   <video
                     src={property.details.video_url.startsWith('http')
                       ? property.details.video_url
-                      : `http://localhost:5000${property.details.video_url}`}
+                      : `${BASE_URL}${property.details.video_url}`}
                     controls
                     className="w-full"
                     style={{ maxHeight: '400px' }}
@@ -161,7 +164,7 @@ const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({ property, isO
                   {property.details.detail_images.map((image, index) => (
                     <div key={index} className="relative group overflow-hidden rounded-lg">
                       <img
-                        src={image.startsWith('http') ? image : `http://localhost:5000${image}`}
+                        src={image.startsWith('http') ? image : `${BASE_URL}${image}`}
                         alt={`Property detail ${index + 1}`}
                         className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
                       />
