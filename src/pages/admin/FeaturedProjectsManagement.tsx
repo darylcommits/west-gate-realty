@@ -75,7 +75,7 @@ const FeaturedProjectsManagement: React.FC = () => {
   const fetchProjects = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/featured-projects`);
+      const response = await fetch(`${API_BASE_URL}/featured-projects?all=true`);
       if (!response.ok) throw new Error('Failed to fetch projects');
       const data = await response.json();
       setProjects(data || []);

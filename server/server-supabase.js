@@ -367,11 +367,17 @@ app.delete('/api/carousel-properties/:id', async (req, res) => {
 // Get all featured projects
 app.get('/api/featured-projects', async (req, res) => {
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from('featured_projects')
       .select('*')
-      .eq('is_featured', true)
       .order('order_index', { ascending: true });
+
+    // Only filter by is_featured if not requesting all items (for admin)
+    if (req.query.all !== 'true') {
+      query = query.eq('is_featured', true);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
     res.json(data);
@@ -516,11 +522,17 @@ app.delete('/api/featured-projects/:id', async (req, res) => {
 // Get all neighborhoods
 app.get('/api/neighborhoods', async (req, res) => {
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from('neighborhoods')
       .select('*')
-      .eq('is_popular', true)
       .order('order_index', { ascending: true });
+
+    // Only filter by is_popular if not requesting all items (for admin)
+    if (req.query.all !== 'true') {
+      query = query.eq('is_popular', true);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
     res.json(data);

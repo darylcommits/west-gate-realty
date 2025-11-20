@@ -67,7 +67,7 @@ const NeighborhoodsManagement: React.FC = () => {
   const fetchNeighborhoods = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/neighborhoods`);
+      const response = await fetch(`${API_BASE_URL}/neighborhoods?all=true`);
       if (!response.ok) throw new Error('Failed to fetch neighborhoods');
       const data = await response.json();
       setNeighborhoods(data || []);
