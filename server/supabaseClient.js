@@ -8,10 +8,20 @@ if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
   process.exit(1);
 }
 
+// Use service role key for server-side operations if available
+// Service role key bypasses RLS and has full permissions (needed for file uploads)
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+
+if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  console.log('🔑 Using service role key for server operations');
+} else {
+  console.log('⚠️  Using anon key - file uploads may fail. Add SUPABASE_SERVICE_ROLE_KEY to .env for full permissions');
+}
+
 // Create Supabase client
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY,
+  supabaseKey,
   {
     auth: {
       autoRefreshToken: true,
