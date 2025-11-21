@@ -192,8 +192,9 @@ const CarouselManagement: React.FC = () => {
       const method = editingProperty ? 'PUT' : 'POST';
 
       // Add timeout to prevent infinite hanging
+      // Increased to 5 minutes for large file uploads (videos + multiple images)
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minute timeout
 
       const response = await fetch(url, {
         method,
